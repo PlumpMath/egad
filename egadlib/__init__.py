@@ -18,15 +18,33 @@ import sys
 import time
 import importlib
 import requests
+import json
 from bottle import request, response, HTTPError
 from os.path import abspath, dirname
 
-projdir = dirname(abspath(__file__+'/..'))
+_projdir = dirname(abspath(__file__+'/..'))
 
-sys.path.append(projdir)
-import config
+config = None
 
 _handlers = []
+
+def load_config(filename):
+    class Cfg(object):
+        def __init__(self, d):
+            self.__dict__ = d
+
+    global config
+    default_cfg = {
+        'graphite_url': 'http://localhost',
+        'plugins':      []
+    }
+    try:
+        with open(filename, 'r') as cfgfile:
+            config = Cfg(json.load(cfgfile))
+    except Exception as cfg_e:
+        print(cfg_e)
+        print('Using default config\n{}'.format(default_cfg))
+        config = Cfg(default_cfg)
 
 def register_handler(match_fn):
     """ Add a plugin to the list of handlers queried
@@ -77,7 +95,7 @@ def get_handler():
     return None
 
 def load_plugins():
-    plugin_dir = projdir+'/plugins'
+    plugin_dir = _projdir+'/plugins'
     print('Loading plugins:')
     sys.path.append(plugin_dir)
     for pname in config.plugins:

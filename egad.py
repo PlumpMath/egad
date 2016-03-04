@@ -14,9 +14,8 @@
 #   limitations under the License.
 #
 
+from argparse import ArgumentParser
 from bottle import request, route, run
-
-from wsgiref.util import is_hop_by_hop
 
 import egadlib
 
@@ -35,6 +34,11 @@ def default_route(_):
 
 
 if __name__ == '__main__':
+    parser = ArgumentParser()
+    parser.add_argument('-c', '-config', dest='cfgfile', default='/etc/egad.cfg', help='Path to config file. Default: /etc/egad.cfg')
+    args = parser.parse_args()
+
+    egadlib.load_config(args.cfgfile)
     egadlib.load_plugins()
     print('\nStarting web server\n')
-    run(host='0.0.0.0', port=8080, debug=True, reloader=True)
+    run(host='0.0.0.0', port=8080, debug=True)

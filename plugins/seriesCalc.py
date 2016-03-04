@@ -15,7 +15,6 @@
 #
 
 import egadlib
-import config
 
 
 def _strip_outer_fn(target):
@@ -72,7 +71,7 @@ def divide_series(request):
             new_tgts.append('divideSeries({},{})'.format(v, den_tgts[k]))
 
     _set_target(request, new_tgts)
-    print(config.graphite_url+request.path+'?'+request.query_string)
+    print(egadlib.config.graphite_url+request.path+'?'+request.query_string)
     return egadlib.proxy_request()
 
 def series_calc(request):
