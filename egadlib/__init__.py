@@ -57,7 +57,11 @@ def proxy_request():
         Proxies the call transparently to the graphite server.
     """
     url = config.graphite_url+request.path+'?'+request.query_string
-    r = requests.get(url)
+    if request.method == 'POST':
+        r = requests.post(url, data=request.body.read())
+    else:
+        r = requests.get(url)
+
     response.status = r.status_code
     return r.content
 

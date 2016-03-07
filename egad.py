@@ -21,7 +21,7 @@ from bottle import request, route, run
 import egadlib
 
 
-@route('/render')
+@route('/render', method=['GET','POST'])
 def render():
     handler = egadlib.get_handler()
     if handler is not None:
@@ -29,7 +29,7 @@ def render():
     else:
         return default_route(None)
 
-@route('<_:path>')
+@route('<_:path>', method=['GET','POST'])
 def default_route(_):
     return egadlib.proxy_request()
 
