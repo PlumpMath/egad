@@ -21,6 +21,7 @@ import requests
 import json
 from bottle import request, response, HTTPError
 from os.path import abspath, dirname
+from wsgiref.util import is_hop_by_hop
 
 _projdir = dirname(abspath(__file__+'/..'))
 
@@ -61,6 +62,11 @@ def proxy_request():
         r = requests.post(url, data=request.body.read())
     else:
         r = requests.get(url)
+
+    # Relay headers intact
+    for k,v in r.headers.items():
+        if not is_hop_by_hop(k):
+            response.set_header(k,v)
 
     response.status = r.status_code
     return r.content
