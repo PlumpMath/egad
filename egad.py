@@ -13,6 +13,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
+from gevent import monkey; monkey.patch_all()
 
 from argparse import ArgumentParser
 from bottle import request, route, run
@@ -42,4 +43,4 @@ if __name__ == '__main__':
     egadlib.load_config(args.cfgfile)
     egadlib.load_plugins()
     print('\nStarting web server\n')
-    run(host='0.0.0.0', port=args.port, debug=True)
+    run(host='0.0.0.0', port=args.port, debug=True, server='gevent')
