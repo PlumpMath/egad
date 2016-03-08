@@ -59,9 +59,10 @@ def proxy_request():
     """
     url = config.graphite_url+request.path+'?'+request.query_string
     if request.method == 'POST':
-        r = requests.post(url, data=request.body.read())
+        r = requests.post(url, data=request.body.read(), headers=request.headers, stream=True)
     else:
-        r = requests.get(url)
+        r = requests.get(url, headers=request.headers, stream=True)
+        content = r.content
 
     # Relay headers intact
     for k,v in r.headers.items():
@@ -69,7 +70,7 @@ def proxy_request():
             response.set_header(k,v)
 
     response.status = r.status_code
-    return r.content
+    return r.raw.read()
 
 def query_graphite(query, from_=10):
     """ Invoke query on graphite server for data
