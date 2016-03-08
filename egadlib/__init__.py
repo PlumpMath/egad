@@ -62,7 +62,6 @@ def proxy_request():
         r = requests.post(url, data=request.body.read(), headers=request.headers, stream=True)
     else:
         r = requests.get(url, headers=request.headers, stream=True)
-        content = r.content
 
     # Relay headers intact
     for k,v in r.headers.items():
